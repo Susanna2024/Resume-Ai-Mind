@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #12141c;
+  --color-surface: #1a1d28;
+  --color-surface-2: #222634;
+  --color-border: #2c3040;
+  --color-ink: #ecedf3;
+  --color-ink-muted: #9297aa;
+  --color-ink-faint: #5d6376;
+
+  --color-match: #5b8def;
+  --color-match-soft: #1d2740;
+  --color-coach: #f2a93c;
+  --color-coach-soft: #302614;
+  --color-good: #4fd1a5;
+  --color-good-soft: #17332a;
+  --color-gap: #e2665a;
+  --color-gap-soft: #331e1c;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-match-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-match);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .skill-chip {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.01em;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border-width: 1px;
+    white-space: nowrap;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease both;
+  }
+
+  .fade-in-delay-1 { animation-delay: 0.08s; }
+  .fade-in-delay-2 { animation-delay: 0.16s; }
+  .fade-in-delay-3 { animation-delay: 0.24s; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in, .fade-in-delay-1, .fade-in-delay-2, .fade-in-delay-3 {
+      animation: none;
+    }
+  }
+}
