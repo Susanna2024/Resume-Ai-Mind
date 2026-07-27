@@ -47,28 +47,17 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <CVDropZone onFileLoaded={setCvText} />
-        <JobOfferInput value={jobText} onChange={setJobText} />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="space-y-4">
+        <label className="block text-sm font-semibold text-text-main">{t.yourCv}</label>
+        <CVDropZone onFileLoaded={setCvText} language={language} />
       </div>
-
-      {/* Fallback di input testuale con id e name per rispettare i requisiti dei form */}
-      <div className="mb-6 bg-surface p-4 rounded-2xl border border-border">
-        <label 
-          htmlFor="cv-text-fallback" 
-          className="block text-xs font-mono text-ink-muted mb-2 uppercase"
-        >
-          O inserisci/incolla il testo del CV manualmente
-        </label>
-        <textarea
-          id="cv-text-fallback"
-          name="cvTextManual"
-          value={cvText}
-          onChange={(e) => setCvText(e.target.value)}
-          placeholder="Incolla qui il contenuto del CV se necessario..."
-          className="w-full h-24 bg-surface-2 p-3 rounded-xl text-sm text-ink border border-border focus:outline-none focus:border-match resize-none"
-        />
+      
+      <div className="flex flex-col justify-between space-y-4">
+        <JobOfferInput value={jobText} onChange={setJobText} language={language} />
+        <div className="hidden md:block" />
       </div>
+    </div>
 
       <button
         onClick={analyze}

@@ -22,40 +22,62 @@ export default {
   cvSuggestions: "CV Suggestions",
 
   errorMissingInput: "Please provide both a CV and a job description.",
+
   errorGeneric: "Something went wrong. Please try again.",
 
   description:
     "Compare your CV against a job offer, or get honest career coaching on where to grow next.",
-    openSource: "open-source · llm-powered",
+  openSource: "open-source · llm-powered",
 
-    appSubtitle:
-      "Compare your CV against a job offer, or get honest career coaching on where to grow next.",
-  
-    footer:
-      "Built with React, FastAPI and Llama 3.3 70B via Groq.",
-      targetRole: "Target Role",
-optional: "optional",
+  appSubtitle:
+    "Compare your CV against a job offer, or get honest career coaching on where to grow next.",
 
-uploadCvFirst: "Please upload your CV first.",
+  footer: "Built with React, FastAPI and Llama 3.3 70B via Groq.",
+  targetRole: "Target Role",
+  optional: "optional",
 
-getCareerCoaching: "Get Career Coaching",
-coachingProgress: "Analyzing Career...",
+  uploadCvFirst: "Please upload your CV first.",
 
-standoutAngle: "Professional Summary",
+  getCareerCoaching: "Get Career Coaching",
+  coachingProgress: "Analyzing Career...",
 
-growthAreas: "Growth Areas",
+  standoutAngle: "Professional Summary",
 
-suggestedRoles: "Suggested Roles",
+  growthAreas: "Growth Areas",
 
-actionPlan: "30-60-90 Day Plan",
+  suggestedRoles: "Suggested Roles",
 
-overview: "Overview",
+  actionPlan: "30-60-90 Day Plan",
 
-recommendedResources: "Recommended Courses",
+  overview: "Overview",
 
-provider: "Provider",
-difficulty: "Difficulty",
-duration: "Duration",
+  recommendedResources: "Recommended Courses",
 
-careerReadinessScore: "Career Readiness Score",
+  provider: "Provider",
+  difficulty: "Difficulty",
+  duration: "Duration",
+
+  careerReadinessScore: "Career Readiness Score",
+
+  // --- New keys to fully translate CareerCoach.tsx ---
+  coachSubtitle: "AI-powered career guidance and analysis",
+  yourCv: "Your CV",
+  targetRoleOptional: "Target Role (Optional)",
+  targetRolePlaceholder: "e.g. Senior Frontend Developer / AI Marketer",
+  targetRoleHelp: "Leave blank to let AI suggest optimal multi-paths.",
+  careerPathsLabel: "Career Paths:",
+  thirtyDaysLabel: "First 30 Days",
+  sixtyDaysLabel: "Days 30-60",
+  ninetyDaysLabel: "Days 60-90",
+  viewResource: "View Resource",
+  resourceFallback: "Resource",
+  standoutAngleLabel: "Standout Angle",
+  professionalPathFallback: "Professional Path",
+  dropCv: "Drop your CV here",
+pdfOnly: "PDF only",
+readingPdf: "reading PDF…",
+uploadPdf: "Upload PDF",
+changePdf: "Change PDF",
+jobDescriptionPlaceholder: "Paste the job description here…",
+jobOffer: "Job offer"
 }

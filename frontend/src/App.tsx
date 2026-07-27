@@ -2,7 +2,7 @@ import { useState } from "react"
 import { translations } from "./i18n"
 
 import MatchAnalysis from "./components/MatchAnalysis"
-import CareerCoach from "./components/CareerCoach"
+import { CareerCoach }from "./components/CareerCoach"
 import type { Language, Mode } from "./lib/types"
 
 const LANGUAGES: { code: Language; label: string }[] = [

@@ -24,41 +24,61 @@ export default {
   errorMissingInput:
     "Introduce tanto el CV como la descripción del puesto de trabajo.",
 
-  errorGeneric:
-    "Ha ocurrido un error. Inténtalo de nuevo.",
+  errorGeneric: "Ha ocurrido un error. Inténtalo de nuevo.",
 
   description:
     "Compara tu CV con una oferta de trabajo o recibe orientación profesional sobre cómo crecer.",
-    openSource: "open-source · basado en llm",
+  openSource: "open-source · basado en llm",
 
-    appSubtitle:
-      "Compara tu CV con una oferta de trabajo o recibe orientación profesional sobre cómo crecer.",
-  
-    footer:
-      "Creado con React, FastAPI y Llama 3.3 70B mediante Groq.",
-      targetRole: "Puesto objetivo",
-optional: "opcional",
+  appSubtitle:
+    "Compara tu CV con una oferta de trabajo o recibe orientación profesional sobre cómo crecer.",
 
-uploadCvFirst: "Sube primero tu CV.",
+  footer: "Creado con React, FastAPI y Llama 3.3 70B mediante Groq.",
+  targetRole: "Puesto objetivo",
+  optional: "opcional",
 
-getCareerCoaching: "Analizar mi carrera",
-coachingProgress: "Analizando carrera...",
+  uploadCvFirst: "Sube primero tu CV.",
 
-standoutAngle: "Perfil profesional",
+  getCareerCoaching: "Analizar mi carrera",
+  coachingProgress: "Analizando carrera...",
 
-growthAreas: "Áreas de mejora",
+  standoutAngle: "Perfil profesional",
 
-suggestedRoles: "Puestos recomendados",
+  growthAreas: "Áreas de mejora",
 
-actionPlan: "Plan de 30-60-90 días",
+  suggestedRoles: "Puestos recomendados",
 
-overview: "Resumen",
+  actionPlan: "Plan de 30-60-90 días",
 
-recommendedResources: "Cursos recomendados",
+  overview: "Resumen",
 
-provider: "Proveedor",
-difficulty: "Nivel",
-duration: "Duración",
+  recommendedResources: "Cursos recomendados",
 
-careerReadinessScore: "Índice de Preparación Profesional",
+  provider: "Proveedor",
+  difficulty: "Nivel",
+  duration: "Duración",
+
+  careerReadinessScore: "Índice de Preparación Profesional",
+
+  // --- Nuevas claves para traducir completamente CareerCoach.tsx ---
+  coachSubtitle: "Orientación profesional impulsada por IA",
+  yourCv: "Tu CV",
+  targetRoleOptional: "Puesto objetivo (opcional)",
+  targetRolePlaceholder: "ej. Senior Frontend Developer / AI Marketer",
+  targetRoleHelp: "Déjalo en blanco para que la IA sugiera los mejores caminos.",
+  careerPathsLabel: "Rutas profesionales:",
+  thirtyDaysLabel: "Primeros 30 días",
+  sixtyDaysLabel: "Días 30-60",
+  ninetyDaysLabel: "Días 60-90",
+  viewResource: "Ver recurso",
+  resourceFallback: "Recurso",
+  standoutAngleLabel: "Punto diferencial",
+  professionalPathFallback: "Ruta Profesional",
+  dropCv: "Arrastra tu CV aquí",
+pdfOnly: "Solo PDF",
+readingPdf: "leyendo PDF…",
+uploadPdf: "Subir PDF",
+changePdf: "Cambiar PDF",
+jobDescriptionPlaceholder: "Pega aquí la descripción del puesto de trabajo…",
+jobOffer: "Oferta de empleo"
 }

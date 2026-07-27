@@ -1,17 +1,28 @@
+
+import { translations } from '../i18n';
+import type { Language } from '../lib/types';
+
 function scoreColor(score: number) {
-  if (score >= 70) return "var(--color-good)"
-  if (score >= 50) return "var(--color-coach)"
-  return "var(--color-gap)"
+  if (score >= 70) return "var(--color-good)";
+  if (score >= 50) return "var(--color-coach)";
+  return "var(--color-gap)";
 }
 
-function scoreLabel(score: number) {
-  if (score >= 70) return "Strong match"
-  if (score >= 50) return "Partial match"
-  return "Weak match"
+interface ScoreRingProps {
+  score: number;
+  category?: string;
+  language?: Language;
 }
 
-export default function ScoreRing({ score }: { score: number }) {
-  const color = scoreColor(score)
+export default function ScoreRing({ score, language = 'en' }: ScoreRingProps) {
+  const color = scoreColor(score);
+  const t = translations[language] || translations.en;
+
+  const getLabel = (s: number) => {
+    if (s >= 70) return t.matchScore || "Strong match";
+    if (s >= 50) return "Partial match";
+    return "Weak match";
+  };
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -33,8 +44,8 @@ export default function ScoreRing({ score }: { score: number }) {
         </div>
       </div>
       <p className="font-mono text-xs uppercase tracking-wider" style={{ color }}>
-        {scoreLabel(score)}
+        {getLabel(score)}
       </p>
     </div>
-  )
+  );
 }
