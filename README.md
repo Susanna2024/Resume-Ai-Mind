@@ -108,17 +108,13 @@ Open `http://127.0.0.1:8000` — the full app (UI + API) is served from there.
 
 ## API reference
 
-`POST /api/analyze`
-```json
+POST /api/analyze
 { "cv_text": "...", "job_text": "...", "language": "en" }
-```
 
-`POST /api/coach`
-```json
-{ "cv_text": "...", "target_role": "", "language": "en" }
-```
+POST /api/coach
+{ "coach_context": { ... }, "target_role": "", "language": "en" }
 
-`GET /health` — health check, useful for uptime monitoring on free hosting tiers.
+GET /health — health check, useful for uptime monitoring on free hosting tiers.
 
 ## Deployment
 
