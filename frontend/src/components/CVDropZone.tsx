@@ -15,7 +15,9 @@ async function extractTextFromPDF(file: File): Promise<string> {
     text += content.items.map((item: any) => item.str).join(" ") + "\n"
   }
   return text
-}export default function CVDropZone({
+}
+
+export default function CVDropZone({
   label = "",
   onFileLoaded,
   language = "en",
@@ -90,13 +92,13 @@ async function extractTextFromPDF(file: File): Promise<string> {
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         className={`relative w-full h-48 bg-surface border-2 border-dashed rounded-xl transition-all flex flex-col items-center justify-center gap-3 px-4 shadow-sm ${
-          dragging ? "border-amber-500 bg-amber-500/10" : "border-border hover:border-amber-500/50"
+          dragging ? "border-[#5993ef] bg-[#5993ef]/10" : "border-border hover:border-[#5993ef]/50"
         }`}
       >
         {loadingFile && (
           <div className="flex items-center space-x-2">
-           <div className="w-4 h-4 border-2 border-[var(--color-coach)] border-t-transparent rounded-full animate-spin" /> 
-            <p className="text-[var(--color-coach)] text-sm font-medium">
+           <div className="w-4 h-4 border-2 border-[#5993ef] border-t-transparent rounded-full animate-spin" /> 
+            <p className="text-[#5993ef] text-sm font-medium">
               {t.readingPdf || currentTexts.reading}
             </p>
           </div>

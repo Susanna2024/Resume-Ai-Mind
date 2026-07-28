@@ -23,7 +23,6 @@ export default {
 
   errorMissingInput:
     "Inserisci sia il CV che la descrizione della posizione lavorativa.",
-
   errorGeneric:
     "Si è verificato un errore. Riprova.",
 
@@ -45,15 +44,10 @@ export default {
   coachingProgress: "Analisi della carriera...",
 
   standoutAngle: "Profilo professionale",
-
   growthAreas: "Aree di miglioramento",
-
   suggestedRoles: "Ruoli consigliati",
-
   actionPlan: "Piano 30-60-90 giorni",
-
   overview: "Panoramica",
-
   recommendedResources: "Corsi consigliati",
 
   provider: "Piattaforma",
@@ -62,7 +56,7 @@ export default {
 
   careerReadinessScore: "Indice di Preparazione Professionale",
 
-  // --- Nuove chiavi per tradurre completamente CareerCoach.tsx ---
+  // --- CareerCoach.tsx ---
   coachSubtitle: "Orientamento di carriera basato su IA",
   yourCv: "Il tuo CV",
   targetRoleOptional: "Ruolo desiderato (opzionale)",
@@ -76,17 +70,42 @@ export default {
   resourceFallback: "Risorsa",
   standoutAngleLabel: "Punto di forza distintivo",
   professionalPathFallback: "Percorso professionale",
-dropCv: "Trascina qui il tuo CV",
-pdfOnly: "Solo PDF",
-readingPdf: "lettura PDF in corso…",
-uploadPdf: "Carica PDF",
-changePdf: "Cambia PDF",
-// CVDropZone texts
-jobDescriptionPlaceholder: "Incolla qui la descrizione dell'offerta di lavoro…",
-jobOffer: "Offerta di lavoro",
 
-technicalSkills: "Competenze tecniche",
-niceToHave: "Competenze preferenziali",
-experienceLevel: "Livello di esperienza",
-softSkillsFit: "Soft skills e fit",
-}
+  // --- CVDropZone & Extra ---
+  dropCv: "Trascina qui il tuo CV",
+  pdfOnly: "Solo PDF",
+  readingPdf: "lettura PDF in corso…",
+  uploadPdf: "Carica PDF",
+  changePdf: "Cambia PDF",
+  jobDescriptionPlaceholder: "Incolla qui la descrizione dell'offerta di lavoro…",
+  jobOffer: "Offerta di lavoro",
+
+  technicalSkills: "Competenze tecniche",
+  niceToHave: "Competenze preferenziali",
+  experienceLevel: "Livello di esperienza",
+  softSkillsFit: "Soft skills e fit",
+  careerCoachingButton: "Career Coaching",
+
+  heroMatchTitle: "Supera i filtri invisibili.",
+  heroMatchHighlight: "Fatti notare da chi conta.",
+  heroMatchDesc: "Allinea con cura il tuo percorso alle offerte a cui tieni di più, trasformando ogni candidatura in un'opportunità reale di colloquio.",
+  heroCoachTitle: "Sblocca il tuo potenziale.",
+  heroCoachHighlight: "Fai il salto di carriera.",
+  heroCoachDesc: "Un servizio di Career Coaching avanzato al tuo fianco: analisi dei gap, piani di crescita a 30-60-90 giorni e orientamento professionale su misura per te.",
+  
+  badgeMatch: "Precisione ATS & Ottimizzazione Mirata",
+  badgeCoach: "Career Coaching Strategico & Mentorship 24/7",
+
+  limitReachedTitle: "Hai esaurito i tuoi tentativi di oggi",
+  limitReachedDesc: "Tra i tantissimi professionisti attivi sulla piattaforma e le tue ricerche, abbiamo raggiunto il limite giornaliero. I tuoi 5 token si ricaricheranno domani!",
+  globalLimitTitle: "Soglia giornaliera della community raggiunta",
+  globalLimitDesc: "Il traffico sulla piattaforma è straordinario oggi e le risorse condivise per le analisi sono esaurite. Torna domani per nuovi token!",
+  
+  systemLive: "Sistema attivo",
+  footerTech: "Powered by Llama 3.3 70B & FastAPI",
+  footerEthos: "Zero storage. I tuoi dati restano tuoi.",
+  heroTitleLine1: "Due strumenti",
+  heroTitleLine2: "Un solo obiettivo:",
+  heroTitleLine3: "il lavoro giusto",
+  backToTools: "Tutti gli strumenti",
+};
