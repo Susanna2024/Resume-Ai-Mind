@@ -18,7 +18,7 @@ function App() {
   const [language, setLanguage] = useState<Language>("en")
 
   const [isGlobalLimitExceeded, setIsGlobalLimitExceeded] = useState<boolean>(false)
-  const [isLoadingStatus, setIsLoadingStatus] = useState<boolean>(true)
+  const [_isLoadingStatus, setIsLoadingStatus] = useState<boolean>(true)
 
   const t = translations[language]
 
