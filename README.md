@@ -43,12 +43,10 @@ resum-ai-mind/
 │   │       └── ai_service.py  # Groq/OpenAI prompts + logic
 │   └── requirements.txt
 └── frontend/
-└── src/
-├── components/        # UI components
-├── lib/               # API client, shared types
-└── App.tsx
-
-
+    └── src/
+        ├── components/        # UI components
+        ├── lib/               # API client, shared types
+        └── App.tsx
 ## Getting started (development)
 
 ### Backend
