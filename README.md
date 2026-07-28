@@ -43,7 +43,6 @@ cvmatch-ai/
 │   │   ├── main.py            # FastAPI app, CORS config
 │   │   ├── routes/
 │   │   │   ├── analysis.py    # POST /api/analyze
-│   │   │   └── coach.py       # POST /api/coach
 │   │   └── services/
 │   │       └── ai_service.py  # Groq prompts + JSON parsing
 │   └── requirements.txt
