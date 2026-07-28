@@ -1,4 +1,5 @@
 # 🚀 ResumAiMind
+🌐 Live Demo: https://resum-ai-mind.onrender.com/
 
 > AI-powered job match analyzer and career coach — open source, multilingual.
 
@@ -66,4 +67,3 @@ npm run dev
 Deployment
 Successfully deployed on Render using a unified monorepo configuration (render.yaml).
 
-🌐 Live Demo: https://resum-ai-mind.onrender.com/
