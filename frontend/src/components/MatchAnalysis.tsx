@@ -6,15 +6,15 @@ import { analyzeMatch } from "../lib/api"
 import type { AnalysisResult, Language } from "../lib/types"
 import { translations } from "../i18n"
 
-const BREAKDOWN_LABELS: Record<string, [string, number]> = {
-  technical_skills: ["Technical skills", 50],
-  nice_to_have: ["Nice-to-have", 20],
-  experience: ["Experience level", 15],
-  soft_skills: ["Soft skills & fit", 15],
-}
-
 export default function MatchAnalysis({ language }: { language: Language }) {
   const t = translations[language]
+
+  const BREAKDOWN_LABELS: Record<string, [string, number]> = {
+    technical_skills: [t.technicalSkills, 50],
+    nice_to_have: [t.niceToHave, 20],
+    experience: [t.experienceLevel, 15],
+    soft_skills: [t.softSkillsFit, 15],
+  }
 
   const [cvText, setCvText] = useState("")
   const [jobText, setJobText] = useState("")
@@ -103,7 +103,7 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-1">
+            <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-1 min-w-0">
               <h3 className="font-display font-semibold text-good mb-3 text-sm uppercase tracking-wide">
                 {t.matchingSkills}
               </h3>
@@ -121,7 +121,7 @@ export default function MatchAnalysis({ language }: { language: Language }) {
             </div>
 
 
-            <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-1">
+            <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-1 min-w-0">
               <h3 className="font-display font-semibold text-gap mb-3 text-sm uppercase tracking-wide">
                 {t.missingSkills}
               </h3>

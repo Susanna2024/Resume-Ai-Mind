@@ -5,7 +5,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from app.routes.analysis import router as analysis_router
-from app.routes.coach import router as coach_router
 
 load_dotenv()
 
@@ -28,8 +27,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# NOTA: /api/analyze e /api/coach vivono entrambi in analysis.py.
+# Il vecchio routes/coach.py duplicava /api/coach senza inoltrare
+# target_role: è stato rimosso per evitare che tornasse silenziosamente
+# a essere quello attivo in caso di riordino degli include.
 app.include_router(analysis_router, prefix="/api")
-app.include_router(coach_router, prefix="/api")
 
 @app.get("/health")
 def health():

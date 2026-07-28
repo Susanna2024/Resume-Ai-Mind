@@ -31,7 +31,9 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
   }
-
+  .text-amber-500 {
+    color: var(--color-coach) !important;
+  }
   ::selection {
     background-color: var(--color-match-soft);
     color: var(--color-ink);
@@ -51,7 +53,12 @@
     padding: 0.3rem 0.7rem;
     border-radius: 999px;
     border-width: 1px;
-    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.4;
   }
 
   .fade-in {

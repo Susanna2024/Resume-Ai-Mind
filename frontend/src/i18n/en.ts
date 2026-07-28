@@ -79,5 +79,10 @@ readingPdf: "reading PDF…",
 uploadPdf: "Upload PDF",
 changePdf: "Change PDF",
 jobDescriptionPlaceholder: "Paste the job description here…",
-jobOffer: "Job offer"
+jobOffer: "Job offer",
+
+technicalSkills: "Technical skills",
+niceToHave: "Nice-to-have",
+experienceLevel: "Experience level",
+softSkillsFit: "Soft skills & fit",
 }

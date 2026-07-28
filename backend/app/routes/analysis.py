@@ -12,7 +12,7 @@ class AnalysisRequest(BaseModel):
     language: str = "en"
 
 class CoachRequest(BaseModel):
-    cv_text: str
+    coach_context: Dict[str, Any]
     target_role: str = ""
     language: str = "en"
 
@@ -30,6 +30,7 @@ class AnalysisResponse(BaseModel):
     summary: str
     cv_suggestions: str
     interview_questions: list
+    coach_context: Optional[Dict[str, Any]] = None
 
 # 1. Rotta per l'analisi CV vs Job Description
 @router.post("/analyze", response_model=AnalysisResponse)
@@ -52,7 +53,7 @@ async def analyze(request: AnalysisRequest):
 async def coach(request: CoachRequest):
     try:
         result = career_coach_multi_path(
-            cv_text=request.cv_text,
+            coach_context=request.coach_context,
             target_role=request.target_role,
             language=request.language
         )

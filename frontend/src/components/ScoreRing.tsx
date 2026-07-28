@@ -1,28 +1,16 @@
-
-import { translations } from '../i18n';
-import type { Language } from '../lib/types';
-
 function scoreColor(score: number) {
-  if (score >= 70) return "var(--color-good)";
-  if (score >= 50) return "var(--color-coach)";
-  return "var(--color-gap)";
+  if (score >= 70) return "var(--color-good)"
+  if (score >= 50) return "var(--color-coach)"
+  return "var(--color-gap)"
 }
 
 interface ScoreRingProps {
-  score: number;
-  category?: string;
-  language?: Language;
+  score: number
+  category?: string
 }
 
-export default function ScoreRing({ score, language = 'en' }: ScoreRingProps) {
-  const color = scoreColor(score);
-  const t = translations[language] || translations.en;
-
-  const getLabel = (s: number) => {
-    if (s >= 70) return t.matchScore || "Strong match";
-    if (s >= 50) return "Partial match";
-    return "Weak match";
-  };
+export default function ScoreRing({ score, category }: ScoreRingProps) {
+  const color = scoreColor(score)
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -43,9 +31,11 @@ export default function ScoreRing({ score, language = 'en' }: ScoreRingProps) {
           <span className="text-ink-faint text-xs font-mono mt-1">/ 100</span>
         </div>
       </div>
-      <p className="font-mono text-xs uppercase tracking-wider" style={{ color }}>
-        {getLabel(score)}
-      </p>
+      {category && (
+        <p className="font-mono text-xs uppercase tracking-wider" style={{ color }}>
+          {category}
+        </p>
+      )}
     </div>
-  );
+  )
 }

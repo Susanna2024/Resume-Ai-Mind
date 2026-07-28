@@ -80,5 +80,10 @@ readingPdf: "leyendo PDF…",
 uploadPdf: "Subir PDF",
 changePdf: "Cambiar PDF",
 jobDescriptionPlaceholder: "Pega aquí la descripción del puesto de trabajo…",
-jobOffer: "Oferta de empleo"
+jobOffer: "Oferta de empleo",
+
+technicalSkills: "Competencias técnicas",
+niceToHave: "Deseables",
+experienceLevel: "Nivel de experiencia",
+softSkillsFit: "Habilidades blandas y encaje",
 }

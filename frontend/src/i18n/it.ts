@@ -83,5 +83,10 @@ uploadPdf: "Carica PDF",
 changePdf: "Cambia PDF",
 // CVDropZone texts
 jobDescriptionPlaceholder: "Incolla qui la descrizione dell'offerta di lavoro…",
-jobOffer: "Offerta di lavoro"
+jobOffer: "Offerta di lavoro",
+
+technicalSkills: "Competenze tecniche",
+niceToHave: "Competenze preferenziali",
+experienceLevel: "Livello di esperienza",
+softSkillsFit: "Soft skills e fit",
 }

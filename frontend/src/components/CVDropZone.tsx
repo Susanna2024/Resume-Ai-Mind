@@ -95,8 +95,8 @@ async function extractTextFromPDF(file: File): Promise<string> {
       >
         {loadingFile && (
           <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-text-main text-sm font-medium">
+           <div className="w-4 h-4 border-2 border-[var(--color-coach)] border-t-transparent rounded-full animate-spin" /> 
+            <p className="text-[var(--color-coach)] text-sm font-medium">
               {t.readingPdf || currentTexts.reading}
             </p>
           </div>

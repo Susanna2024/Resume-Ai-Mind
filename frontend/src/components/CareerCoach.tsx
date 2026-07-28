@@ -3,7 +3,7 @@ import { translations } from "../i18n";
 import type { Language } from "../lib/types";
 import ScoreRing from "./ScoreRing";
 import CVDropZone from "./CVDropZone";
-import { getCareerCoaching } from "../lib/api";
+import { getCareerCoaching, analyzeMatch } from "../lib/api";
 import { Sparkles, BookOpen, Compass, CheckCircle2, ExternalLink, Layers } from "lucide-react";
 
 interface CareerCoachProps {
@@ -27,7 +27,23 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getCareerCoaching(cvText, targetRole, language);
+      // 1. Esegui l'analisi passando il CV e il targetRole come descrizione del lavoro
+      const analysisData = await analyzeMatch(cvText, targetRole || "Professional role", language);
+      
+      // 2. Recuperiamo il coach_context in modo sicuro (usando un cast o un fallback)
+      const context = (analysisData as any).coach_context || {
+        match_score: analysisData.match_score || 70,
+        score_breakdown: analysisData.score_breakdown || {},
+        matching_skills: analysisData.matching_skills || [],
+        missing_skills: analysisData.missing_skills || [],
+        summary: analysisData.summary || "",
+        cv_suggestions: analysisData.cv_suggestions || "",
+        interview_questions: analysisData.interview_questions || []
+      };
+      
+      // 3. Passiamo il contesto al career coach
+      const data = await getCareerCoaching(context, targetRole, language);
+      
       setResult(data);
       setActivePathIndex(0);
     } catch (err: any) {
@@ -50,7 +66,7 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface p-6 rounded-2xl border border-border shadow-sm">
         <div className="space-y-4">
           <label className="block text-sm font-semibold text-text-main">{t.yourCv}</label>
-          <CVDropZone onFileLoaded={setCvText} />
+          <CVDropZone onFileLoaded={setCvText} language={language} />
         </div>
         <div className="space-y-4 flex flex-col justify-between">
           <div>
@@ -67,8 +83,7 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
           <button
             onClick={handleAnalyze}
             disabled={loading || !cvText}
-            className="w-full py-3.5 px-6 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-black font-semibold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2"
-          >
+            className="w-full py-3.5 px-6 bg-[var(--color-coach)] hover:brightness-90 disabled:opacity-50 text-black font-semibold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2"          >
             {loading ? (
               <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
             ) : (
@@ -106,7 +121,7 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
                   onClick={() => setActivePathIndex(index)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     activePathIndex === index
-                      ? "bg-amber-500 text-black font-semibold shadow-md"
+                      ? "bg-color-coach-soft text-color-coach font-semibold shadow-md border border-color-coach/30"
                       : "bg-background text-text-main hover:bg-surface border border-border"
                   }`}
                 >
@@ -119,8 +134,7 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
           <div className="bg-surface p-8 rounded-2xl border border-border shadow-sm flex flex-col md:flex-row items-center gap-8">
             <ScoreRing
               score={currentPath.readiness_score || 70}
-              category={currentPath.readiness_category || "Intermediate"}
-              language={language}
+              category={currentPath.readiness_category}
             />
             <div className="space-y-3 flex-1 text-center md:text-left">
               <h3 className="text-xl font-bold text-text-main">

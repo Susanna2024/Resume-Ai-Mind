@@ -21,12 +21,12 @@ export async function analyzeMatch(
 }
 
 export async function getCareerCoaching(
-  cvText: string,
+  coachContext: Record<string, any>,
   targetRole: string,
   language: Language
 ): Promise<CoachResult> {
   const { data } = await axios.post(`${API_URL}/api/coach`, {
-    cv_text: cvText,
+    coach_context: coachContext,
     target_role: targetRole,
     language,
   })
