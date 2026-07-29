@@ -1,15 +1,11 @@
 from typing import Optional, Dict, Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from app.services.ai_service import analyze_match, career_coach_multi_path
 import traceback
+import pypdf # Assicurati di avere pypdf o pdfplumber installato nel backend
 
 router = APIRouter()
-
-class AnalysisRequest(BaseModel):
-    cv_text: str
-    job_text: str
-    language: str = "en"
 
 class CoachRequest(BaseModel):
     coach_context: Dict[str, Any]
@@ -32,14 +28,37 @@ class AnalysisResponse(BaseModel):
     interview_questions: list
     coach_context: Optional[Dict[str, Any]] = None
 
-# 1. Rotta per l'analisi CV vs Job Description
+def extract_text_from_pdf(pdf_bytes: bytes) -> str:
+    import io
+    reader = pypdf.PdfReader(io.BytesIO(pdf_bytes))
+    text = ""
+    for page in reader.pages:
+        extracted = page.extract_text()
+        if extracted:
+            text += extracted + "\n"
+    return text
+
+# 1. Rotta per l'analisi CV (ora riceve un file binario via FormData)
 @router.post("/analyze", response_model=AnalysisResponse)
-async def analyze(request: AnalysisRequest):
+async def analyze(
+    file: UploadFile = File(...),
+    job_text: str = Form(...),
+    language: str = Form("en")
+):
     try:
+        # Leggiamo i byte del PDF caricato dal client
+        pdf_bytes = await file.read()
+        
+        # Estraiamo il testo lato server in modo robusto
+        cv_text = extract_text_from_pdf(pdf_bytes)
+        
+        if not cv_text.strip():
+            raise HTTPException(status_code=400, detail="Impossibile estrarre testo dal PDF o file vuoto.")
+
         result = analyze_match(
-            cv_text=request.cv_text,
-            job_text=request.job_text,
-            language=request.language
+            cv_text=cv_text,
+            job_text=job_text,
+            language=language
         )
         return result
     except Exception as e:
@@ -48,7 +67,7 @@ async def analyze(request: AnalysisRequest):
         print("--------------------------------")
         raise HTTPException(status_code=500, detail=str(e))
 
-# 2. Rotta per il Career Coach Multi-Path (usiamo Dict[str, Any] per evitare errori di validazione Pydantic)
+# 2. Rotta per il Career Coach Multi-Path (rimane basata su JSON inviato dal client)
 @router.post("/coach", response_model=Dict[str, Any])
 async def coach(request: CoachRequest):
     try:
