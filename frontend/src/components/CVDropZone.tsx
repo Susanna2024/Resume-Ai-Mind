@@ -3,18 +3,29 @@ import * as pdfjsLib from "pdfjs-dist"
 import { translations } from "../i18n"
 import type { Language } from "../lib/types"
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+// Configurazione sicura del worker locale tramite Vite per evitare blocchi CDN su mobile
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString()
 
 async function extractTextFromPDF(file: File): Promise<string> {
-  const arrayBuffer = await file.arrayBuffer()
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-  let text = ""
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i)
-    const content = await page.getTextContent()
-    text += content.items.map((item: any) => item.str).join(" ") + "\n"
+  try {
+    const arrayBuffer = await file.arrayBuffer()
+    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
+    const pdf = await loadingTask.promise
+    
+    let text = ""
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i)
+      const content = await page.getTextContent()
+      text += content.items.map((item: any) => item.str).join(" ") + "\n"
+    }
+    return text.trim()
+  } catch (error) {
+    console.error("Errore durante l'estrazione del PDF:", error)
+    throw new Error("Impossibile leggere il file PDF. Assicurati che non sia protetto o danneggiato.")
   }
-  return text
 }
 
 export default function CVDropZone({
@@ -26,7 +37,6 @@ export default function CVDropZone({
   onFileLoaded: (text: string) => void
   language?: Language | string | any
 }) {
-  // Estrae la stringa della lingua in modo sicuro indipendentemente da come viene passata
   const langString = 
     typeof language === "string" ? language :
     (language && typeof language === "object" && typeof language.code === "string" ? language.code : 
@@ -38,23 +48,36 @@ export default function CVDropZone({
   const [dragging, setDragging] = useState(false)
   const [fileName, setFileName] = useState("")
   const [loadingFile, setLoadingFile] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const processFile = async (file: File) => {
-    if (!file || file.type !== "application/pdf") return
+    if (!file || file.type !== "application/pdf") {
+      setErrorMessage("Formato non valido. Carica un file PDF.")
+      return
+    }
     setLoadingFile(true)
-    const text = await extractTextFromPDF(file)
-    onFileLoaded(text)
-    setFileName(file.name)
-    setLoadingFile(false)
+    setErrorMessage(null)
+
+    try {
+      const text = await extractTextFromPDF(file)
+      onFileLoaded(text)
+      setFileName(file.name)
+    } catch (err: any) {
+      setErrorMessage(err.message || "Errore di lettura")
+      setFileName("")
+    } finally {
+      setLoadingFile(false)
+    }
   }
 
   const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault()
     setDragging(false)
-    processFile(e.dataTransfer.files[0])
+    if (e.dataTransfer.files?.[0]) {
+      processFile(e.dataTransfer.files[0])
+    }
   }, [])
 
-  // Testi diretti basati sulla lingua attiva calcolata (garantiti al 100%)
   const textMap = {
     it: {
       reading: "lettura PDF in corso…",
@@ -104,7 +127,13 @@ export default function CVDropZone({
           </div>
         )}
 
-        {!loadingFile && fileName && (
+        {!loadingFile && errorMessage && (
+          <p className="text-red-500 text-xs font-semibold text-center px-2">
+            {errorMessage}
+          </p>
+        )}
+
+        {!loadingFile && !errorMessage && fileName && (
           <div className="flex flex-col items-center space-y-1 text-center">
             <span className="text-emerald-500 font-bold text-lg">✓</span>
             <p className="text-text-main text-sm font-semibold break-all px-2">
@@ -113,7 +142,7 @@ export default function CVDropZone({
           </div>
         )}
 
-        {!loadingFile && !fileName && (
+        {!loadingFile && !fileName && !errorMessage && (
           <>
             <p className="text-text-main text-sm font-medium text-center">
               {t.dropCv || currentTexts.drop}
