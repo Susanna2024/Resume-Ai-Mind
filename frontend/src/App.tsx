@@ -21,11 +21,11 @@ function App() {
   const [_isLoadingStatus, setIsLoadingStatus] = useState<boolean>(true)
 
   const t = translations[language]
-
   useEffect(() => {
     const checkGlobalStatus = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/system-status")
+        const API_URL = import.meta.env.VITE_API_URL || ""
+        const response = await fetch(`${API_URL}/api/system-status`)
         if (response.ok) {
           const data = await response.json()
           if (data.limit_exceeded) setIsGlobalLimitExceeded(true)
@@ -38,7 +38,6 @@ function App() {
     }
     checkGlobalStatus()
   }, [])
-
   return (
     <div className="min-h-screen bg-bg text-ink selection:bg-amber-500/30 selection:text-amber-200 relative overflow-hidden font-sans">
 
