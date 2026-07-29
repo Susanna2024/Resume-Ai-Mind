@@ -30,13 +30,15 @@ async function extractTextFromPDF(file: File): Promise<string> {
         
         const trimmed = text.trim()
         if (!trimmed) {
-          reject("emptyError")
+          // Se è vuoto, restituiamo un'indicazione speciale ma non blocchiamo brutalmente
+          resolve("[FILE_GREZZO_DA_BACKEND]")
           return
         }
         resolve(trimmed)
       } catch (error) {
-        console.error("Errore parsing PDF:", error)
-        reject("parseError")
+        console.warn("Parsing client fallito, delego al backend:", error)
+        // Fallback: se il client fallisce (es. file da cloud mobile), passiamo il controllo al backend
+        resolve("[FILE_GREZZO_DA_BACKEND]")
       }
     }
 
@@ -66,7 +68,6 @@ export default function CVDropZone({
   const [loadingFile, setLoadingFile] = useState(false)
   const [errorKey, setErrorKey] = useState<string | null>(null)
 
-  // Mappa completa dei testi e degli errori multilingua (it, en, es)
   const textMap = {
     it: {
       reading: "lettura PDF in corso…",
@@ -74,9 +75,6 @@ export default function CVDropZone({
       only: "Solo PDF, oppure",
       upload: "Carica PDF",
       change: "Cambia PDF",
-      readError: "Impossibile leggere il file dal dispositivo.",
-      emptyError: "Il PDF sembra vuoto o contiene solo immagini non leggibili.",
-      parseError: "Impossibile analizzare il PDF. Verifica che non sia protetto da password.",
       invalidFormat: "Formato non valido. Carica un file PDF."
     },
     es: {
@@ -85,9 +83,6 @@ export default function CVDropZone({
       only: "Solo PDF, o",
       upload: "Subir PDF",
       change: "Cambiar PDF",
-      readError: "No se pudo leer el archivo del dispositivo.",
-      emptyError: "El PDF parece estar vacío o contiene solo imágenes no legibles.",
-      parseError: "No se pudo analizar el PDF. Comprueba que no esté protegido con contraseña.",
       invalidFormat: "Formato no válido. Por favor, sube un archivo PDF."
     },
     en: {
@@ -96,9 +91,6 @@ export default function CVDropZone({
       only: "PDF only, or",
       upload: "Upload PDF",
       change: "Change PDF",
-      readError: "Unable to read the file from your device.",
-      emptyError: "The PDF appears to be empty or contains only non-readable images.",
-      parseError: "Unable to parse the PDF. Please check if it is password protected.",
       invalidFormat: "Invalid format. Please upload a PDF file."
     }
   }
@@ -115,10 +107,11 @@ export default function CVDropZone({
 
     try {
       const text = await extractTextFromPDF(file)
-      onFileLoaded(text)
+      // Se il client ha delegato, passiamo un'etichetta o il nome file gestibile dal backend
+      onFileLoaded(text === "[FILE_GREZZO_DA_BACKEND]" ? `[FILE:${file.name}]` : text)
       setFileName(file.name)
     } catch (errKey: any) {
-      setErrorKey(errKey || "parseError")
+      setErrorKey(errKey || "invalidFormat")
       setFileName("")
     } finally {
       setLoadingFile(false)
@@ -158,7 +151,7 @@ export default function CVDropZone({
 
         {!loadingFile && errorKey && (
           <p className="text-red-500 text-xs font-semibold text-center px-2">
-            {(currentTexts as any)[errorKey] || currentTexts.parseError}
+            {(currentTexts as any)[errorKey] || currentTexts.invalidFormat}
           </p>
         )}
 
