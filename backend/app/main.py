@@ -9,8 +9,8 @@ from app.routes.analysis import router as analysis_router
 load_dotenv()
 
 app = FastAPI(
-    title="CVMatch AI",
-    description="AI-powered job match analyzer — open source, multilingual",
+    title="RESUMAIMIND",
+    description="AI-powered job match analyzer — multilingual",
     version="1.0.0"
 )
 
@@ -53,4 +53,4 @@ if os.path.isdir(FRONTEND_DIST):
 else:
     @app.get("/")
     def root():
-        return {"message": "CVMatch AI backend is running 🚀 (frontend not built yet — see README)"}
+        return {"message": "RESUMAIMIND backend is running 🚀 (frontend not built yet — see README)"}
