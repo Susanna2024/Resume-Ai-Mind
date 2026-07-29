@@ -12,7 +12,8 @@ interface CareerCoachProps {
 
 export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
   const t = translations[language] || translations.en;
-  const [cvText, setCvText] = useState("");
+  // Modificato: ora memorizziamo l'oggetto File anziché la stringa
+  const [cvFile, setCvFile] = useState<File | null>(null);
   const [targetRole, setTargetRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
@@ -20,17 +21,17 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
-    if (!cvText.trim()) {
+    if (!cvFile) {
       setError(t.uploadCvFirst);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      // 1. Esegui l'analisi passando il CV e il targetRole come descrizione del lavoro
-      const analysisData = await analyzeMatch(cvText, targetRole || "Professional role", language);
+      // 1. Esegui l'analisi passando il File e il targetRole come descrizione del lavoro
+      const analysisData = await analyzeMatch(cvFile, targetRole || "Professional role", language);
       
-      // 2. Recuperiamo il coach_context in modo sicuro (usando un cast o un fallback)
+      // 2. Recuperiamo il coach_context in modo sicuro
       const context = (analysisData as any).coach_context || {
         match_score: analysisData.match_score || 70,
         score_breakdown: analysisData.score_breakdown || {},
@@ -66,7 +67,7 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface p-6 rounded-2xl border border-border shadow-sm">
         <div className="space-y-4">
           <label className="block text-sm font-semibold text-text-main">{t.yourCv}</label>
-          <CVDropZone onFileLoaded={setCvText} language={language} />
+          <CVDropZone onFileLoaded={setCvFile} language={language} />
         </div>
         <div className="space-y-4 flex flex-col justify-between">
           <div>
@@ -82,8 +83,9 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
           </div>
           <button
             onClick={handleAnalyze}
-            disabled={loading || !cvText}
-            className="w-full py-3.5 px-6 bg-[var(--color-coach)] hover:brightness-90 disabled:opacity-50 text-black font-semibold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2"          >
+            disabled={loading || !cvFile}
+            className="w-full py-3.5 px-6 bg-[var(--color-coach)] hover:brightness-90 disabled:opacity-50 text-black font-semibold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2"
+          >
             {loading ? (
               <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
             ) : (
