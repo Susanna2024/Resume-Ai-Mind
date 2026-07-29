@@ -3,29 +3,45 @@ import * as pdfjsLib from "pdfjs-dist"
 import { translations } from "../i18n"
 import type { Language } from "../lib/types"
 
-// Configurazione sicura del worker locale tramite Vite per evitare blocchi CDN su mobile
+// Configurazione sicura del worker locale tramite Vite per dispositivi mobili
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
 ).toString()
 
 async function extractTextFromPDF(file: File): Promise<string> {
-  try {
-    const arrayBuffer = await file.arrayBuffer()
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
-    const pdf = await loadingTask.promise
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
     
-    let text = ""
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i)
-      const content = await page.getTextContent()
-      text += content.items.map((item: any) => item.str).join(" ") + "\n"
+    reader.onerror = () => reject("readError")
+    
+    reader.onload = async () => {
+      try {
+        const typedArray = new Uint8Array(reader.result as ArrayBuffer)
+        const loadingTask = pdfjsLib.getDocument({ data: typedArray })
+        const pdf = await loadingTask.promise
+        
+        let text = ""
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i)
+          const content = await page.getTextContent()
+          text += content.items.map((item: any) => item.str).join(" ") + "\n"
+        }
+        
+        const trimmed = text.trim()
+        if (!trimmed) {
+          reject("emptyError")
+          return
+        }
+        resolve(trimmed)
+      } catch (error) {
+        console.error("Errore parsing PDF:", error)
+        reject("parseError")
+      }
     }
-    return text.trim()
-  } catch (error) {
-    console.error("Errore durante l'estrazione del PDF:", error)
-    throw new Error("Impossibile leggere il file PDF. Assicurati che non sia protetto o danneggiato.")
-  }
+
+    reader.readAsArrayBuffer(file)
+  })
 }
 
 export default function CVDropZone({
@@ -48,22 +64,61 @@ export default function CVDropZone({
   const [dragging, setDragging] = useState(false)
   const [fileName, setFileName] = useState("")
   const [loadingFile, setLoadingFile] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorKey, setErrorKey] = useState<string | null>(null)
+
+  // Mappa completa dei testi e degli errori multilingua (it, en, es)
+  const textMap = {
+    it: {
+      reading: "lettura PDF in corso…",
+      drop: "Trascina qui il tuo CV",
+      only: "Solo PDF, oppure",
+      upload: "Carica PDF",
+      change: "Cambia PDF",
+      readError: "Impossibile leggere il file dal dispositivo.",
+      emptyError: "Il PDF sembra vuoto o contiene solo immagini non leggibili.",
+      parseError: "Impossibile analizzare il PDF. Verifica che non sia protetto da password.",
+      invalidFormat: "Formato non valido. Carica un file PDF."
+    },
+    es: {
+      reading: "leyendo PDF…",
+      drop: "Arrastra tu CV aquí",
+      only: "Solo PDF, o",
+      upload: "Subir PDF",
+      change: "Cambiar PDF",
+      readError: "No se pudo leer el archivo del dispositivo.",
+      emptyError: "El PDF parece estar vacío o contiene solo imágenes no legibles.",
+      parseError: "No se pudo analizar el PDF. Comprueba que no esté protegido con contraseña.",
+      invalidFormat: "Formato no válido. Por favor, sube un archivo PDF."
+    },
+    en: {
+      reading: "reading PDF…",
+      drop: "Drop your CV here",
+      only: "PDF only, or",
+      upload: "Upload PDF",
+      change: "Change PDF",
+      readError: "Unable to read the file from your device.",
+      emptyError: "The PDF appears to be empty or contains only non-readable images.",
+      parseError: "Unable to parse the PDF. Please check if it is password protected.",
+      invalidFormat: "Invalid format. Please upload a PDF file."
+    }
+  }
+
+  const currentTexts = textMap[langKey as keyof typeof textMap] || textMap.en
 
   const processFile = async (file: File) => {
     if (!file || file.type !== "application/pdf") {
-      setErrorMessage("Formato non valido. Carica un file PDF.")
+      setErrorKey("invalidFormat")
       return
     }
     setLoadingFile(true)
-    setErrorMessage(null)
+    setErrorKey(null)
 
     try {
       const text = await extractTextFromPDF(file)
       onFileLoaded(text)
       setFileName(file.name)
-    } catch (err: any) {
-      setErrorMessage(err.message || "Errore di lettura")
+    } catch (errKey: any) {
+      setErrorKey(errKey || "parseError")
       setFileName("")
     } finally {
       setLoadingFile(false)
@@ -77,32 +132,6 @@ export default function CVDropZone({
       processFile(e.dataTransfer.files[0])
     }
   }, [])
-
-  const textMap = {
-    it: {
-      reading: "lettura PDF in corso…",
-      drop: "Trascina qui il tuo CV",
-      only: "Solo PDF, oppure",
-      upload: "Carica PDF",
-      change: "Cambia PDF",
-    },
-    es: {
-      reading: "leyendo PDF…",
-      drop: "Arrastra tu CV aquí",
-      only: "Solo PDF, o",
-      upload: "Subir PDF",
-      change: "Cambiar PDF",
-    },
-    en: {
-      reading: "reading PDF…",
-      drop: "Drop your CV here",
-      only: "PDF only, or",
-      upload: "Upload PDF",
-      change: "Change PDF",
-    }
-  }
-
-  const currentTexts = textMap[langKey as keyof typeof textMap] || textMap.en
 
   return (
     <div className="w-full">
@@ -127,13 +156,13 @@ export default function CVDropZone({
           </div>
         )}
 
-        {!loadingFile && errorMessage && (
+        {!loadingFile && errorKey && (
           <p className="text-red-500 text-xs font-semibold text-center px-2">
-            {errorMessage}
+            {(currentTexts as any)[errorKey] || currentTexts.parseError}
           </p>
         )}
 
-        {!loadingFile && !errorMessage && fileName && (
+        {!loadingFile && !errorKey && fileName && (
           <div className="flex flex-col items-center space-y-1 text-center">
             <span className="text-emerald-500 font-bold text-lg">✓</span>
             <p className="text-text-main text-sm font-semibold break-all px-2">
@@ -142,7 +171,7 @@ export default function CVDropZone({
           </div>
         )}
 
-        {!loadingFile && !fileName && !errorMessage && (
+        {!loadingFile && !fileName && !errorKey && (
           <>
             <p className="text-text-main text-sm font-medium text-center">
               {t.dropCv || currentTexts.drop}
