@@ -16,17 +16,15 @@ export default function MatchAnalysis({ language }: { language: Language }) {
     soft_skills: [t.softSkillsFit, 15],
   }
 
-  const [cvText, setCvText] = useState("")
+  // Modificato: ora memorizziamo l'oggetto File grezzo anziché una stringa
+  const [cvFile, setCvFile] = useState<File | null>(null)
   const [jobText, setJobText] = useState("")
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
   const analyze = async () => {
-    console.log("CV Text length:", cvText.length)
-    console.log("Job Text length:", jobText.length)
-
-    if (!cvText || !jobText) {
+    if (!cvFile || !jobText) {
       setError(t.errorMissingInput)
       return
     }
@@ -35,7 +33,8 @@ export default function MatchAnalysis({ language }: { language: Language }) {
     setError("")
 
     try {
-      const data = await analyzeMatch(cvText, jobText, language)
+      // Passiamo il file direttamente alla funzione API che lo invierà via FormData
+      const data = await analyzeMatch(cvFile, jobText, language)
       setResult(data)
     } catch (e) {
       setError(t.errorGeneric)
@@ -47,17 +46,17 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
   return (
     <div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div className="space-y-4">
-        <label className="block text-sm font-semibold text-text-main">{t.yourCv}</label>
-        <CVDropZone onFileLoaded={setCvText} language={language} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="space-y-4">
+          <label className="block text-sm font-semibold text-text-main">{t.yourCv}</label>
+          <CVDropZone onFileLoaded={setCvFile} language={language} />
+        </div>
+        
+        <div className="flex flex-col justify-between space-y-4">
+          <JobOfferInput value={jobText} onChange={setJobText} language={language} />
+          <div className="hidden md:block" />
+        </div>
       </div>
-      
-      <div className="flex flex-col justify-between space-y-4">
-        <JobOfferInput value={jobText} onChange={setJobText} language={language} />
-        <div className="hidden md:block" />
-      </div>
-    </div>
 
       <button
         onClick={analyze}
@@ -71,7 +70,6 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
       {result && (
         <div className="space-y-5 mt-8">
-
           <div className="bg-surface rounded-2xl p-8 border border-border flex flex-col items-center fade-in">
             <ScoreRing score={result.match_score} />
 
@@ -100,9 +98,7 @@ export default function MatchAnalysis({ language }: { language: Language }) {
             )}
           </div>
 
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
             <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-1 min-w-0">
               <h3 className="font-display font-semibold text-good mb-3 text-sm uppercase tracking-wide">
                 {t.matchingSkills}
@@ -110,16 +106,12 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
               <div className="flex flex-wrap gap-2">
                 {result.matching_skills.map((s) => (
-                  <span
-                    key={s}
-                    className="skill-chip bg-good-soft text-good border-good/30"
-                  >
+                  <span key={s} className="skill-chip bg-good-soft text-good border-good/30">
                     {s}
                   </span>
                 ))}
               </div>
             </div>
-
 
             <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-1 min-w-0">
               <h3 className="font-display font-semibold text-gap mb-3 text-sm uppercase tracking-wide">
@@ -128,18 +120,13 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
               <div className="flex flex-wrap gap-2">
                 {result.missing_skills.map((s) => (
-                  <span
-                    key={s}
-                    className="skill-chip bg-gap-soft text-gap border-gap/30"
-                  >
+                  <span key={s} className="skill-chip bg-gap-soft text-gap border-gap/30">
                     {s}
                   </span>
                 ))}
               </div>
             </div>
-
           </div>
-
 
           <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-2">
             <h3 className="font-display font-semibold text-match mb-3 text-sm uppercase tracking-wide">
@@ -151,7 +138,6 @@ export default function MatchAnalysis({ language }: { language: Language }) {
             </p>
           </div>
 
-
           <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-2">
             <h3 className="font-display font-semibold text-coach mb-3 text-sm uppercase tracking-wide">
               {t.cvSuggestions}
@@ -162,30 +148,22 @@ export default function MatchAnalysis({ language }: { language: Language }) {
             </p>
           </div>
 
-
           <div className="bg-surface rounded-2xl p-6 border border-border fade-in fade-in-delay-3">
-
             <h3 className="font-display font-semibold text-ink mb-3 text-sm uppercase tracking-wide">
               {t.interviewQuestions}
             </h3>
 
             <ul className="space-y-2">
               {result.interview_questions.map((q, i) => (
-                <li
-                  key={i}
-                  className="text-ink-muted leading-relaxed flex gap-2"
-                >
+                <li key={i} className="text-ink-muted leading-relaxed flex gap-2">
                   <span className="text-ink-faint font-mono">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-
                   {q}
                 </li>
               ))}
             </ul>
-
           </div>
-
         </div>
       )}
     </div>
