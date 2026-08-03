@@ -5,6 +5,7 @@ import ScoreRing from "./ScoreRing";
 import CVDropZone from "./CVDropZone";
 import { getCareerCoaching, analyzeMatch } from "../lib/api";
 import { Sparkles, BookOpen, Compass, CheckCircle2, ExternalLink, Layers } from "lucide-react";
+import { trackEvent } from "../lib/analytics";
 
 interface CareerCoachProps {
   language: Language;
@@ -27,6 +28,7 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
     }
     setLoading(true);
     setError(null);
+    trackEvent("coach_requested", { language, has_target_role: Boolean(targetRole) });
     try {
       // 1. Esegui l'analisi passando il File e il targetRole come descrizione del lavoro
       const analysisData = await analyzeMatch(cvFile, targetRole || "Professional role", language);
@@ -47,8 +49,10 @@ export const CareerCoach: React.FC<CareerCoachProps> = ({ language }) => {
       
       setResult(data);
       setActivePathIndex(0);
+      trackEvent("coach_completed", { language });
     } catch (err: any) {
       setError(err.message || t.errorGeneric);
+      trackEvent("coach_error", { language });
     } finally {
       setLoading(false);
     }

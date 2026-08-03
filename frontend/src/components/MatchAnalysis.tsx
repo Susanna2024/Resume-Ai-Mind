@@ -5,6 +5,7 @@ import ScoreRing from "./ScoreRing"
 import { analyzeMatch } from "../lib/api"
 import type { AnalysisResult, Language } from "../lib/types"
 import { translations } from "../i18n"
+import { trackEvent } from "../lib/analytics"
 
 export default function MatchAnalysis({ language }: { language: Language }) {
   const t = translations[language]
@@ -31,14 +32,21 @@ export default function MatchAnalysis({ language }: { language: Language }) {
 
     setLoading(true)
     setError("")
+    trackEvent("analysis_started", { language })
 
     try {
       // Passiamo il file direttamente alla funzione API che lo invierà via FormData
       const data = await analyzeMatch(cvFile, jobText, language)
       setResult(data)
+      trackEvent("analysis_completed", {
+        language,
+        match_score: data.match_score,
+        match_category: data.match_category,
+      })
     } catch (e) {
       setError(t.errorGeneric)
       console.error(e)
+      trackEvent("analysis_error", { language })
     } finally {
       setLoading(false)
     }
